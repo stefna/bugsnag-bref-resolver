@@ -1,0 +1,28 @@
+name: "Continuous Integration"
+
+on:
+  - push
+  - pull_request
+
+env:
+  COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --prefer-dist"
+
+jobs:
+  cs:
+    name: Codestyle check on PHP 8.0
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Set up PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              php-version: 8.0
+
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Download dependencies
+          run: composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
+
+        - name: Run tests
+          run: ./vendor/bin/phpcs --standard=vendor/stefna/codestyle/library.xml src/
